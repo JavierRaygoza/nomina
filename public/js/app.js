@@ -1908,6 +1908,8 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2112,6 +2114,20 @@ __webpack_require__.r(__webpack_exports__);
       btn_cerrar: 'Cerrar',
       btn_guardar: 'Guardar',
       modal_titulo: 'Agregar empleado',
+      titulo_exito_eliminacion: 'Empleado eliminado exitosamente.',
+      desripcion_exito_eliminacion: 'El empleado se ha eliminado.',
+      titulo_error_eliminacion: 'Error al eliminar al empleado.',
+      desripcion_error_eliminacion: 'El empleado no ha sido habilitado.',
+      titulo_exito_activar: 'Empleado activo exitosamente.',
+      desripcion_exito_activar: 'El empleado se ha habilitado.',
+      titulo_error_activar: 'Error al habilitar al empleado.',
+      desripcion_error_activar: 'El empleado no ha sido habilitado.',
+      titulo_exito_inactivar: 'Empleado inactivo exitosamente.',
+      desripcion_exito_inactivar: 'El empleado se ha inhabilitado.',
+      titulo_error_inactivar: 'Error al inhabilitar al empleado.',
+      desripcion_error_inactivar: 'El empleado no ha sido inhabilitado.',
+      search: '',
+      offset: 3,
       pagination: {
         'total': 0,
         'current_page': 0,
@@ -2119,8 +2135,7 @@ __webpack_require__.r(__webpack_exports__);
         'last_page': 0,
         'from': 0,
         'to': 0
-      },
-      search: ''
+      }
     };
   },
   computed: {
@@ -2300,66 +2315,60 @@ __webpack_require__.r(__webpack_exports__);
       };
       $('#empleadoModal').modal('hide');
     },
-    activarDesactivar: function activarDesactivar(empleado) {
+    cambiarEstados: function cambiarEstados(campo, valor, modelo, titulo_exito, descripcion_exito, titulo_error, descripcion_error) {
       var _this4 = this;
 
+      axios.put('/empleados/estado/' + modelo.id, _defineProperty({}, "".concat(campo), valor)).then(function (response) {
+        var status = response.status;
+
+        if (status === 200) {
+          _this4.getEmpleados();
+
+          Swal.fire({
+            type: 'success',
+            title: titulo_exito,
+            text: descripcion_exito
+          });
+        } else {
+          _this4.getEmpleados();
+
+          Swal.fire({
+            type: 'error',
+            title: titulo_error,
+            text: descripcion_error
+          });
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    activarDesactivar: function activarDesactivar(empleado) {
       switch (empleado.estado) {
         case 'Activo':
-          axios.put('/empleados/estado/' + empleado.id, {
-            'estado': 'Inactivo'
-          }).then(function (response) {
-            var status = response.status;
-
-            if (status === 200) {
-              _this4.getEmpleados();
-
-              Swal.fire({
-                type: 'success',
-                title: 'Empleado inactivo exitosamente.',
-                text: 'El empleado se ha inhabilitado.'
-              });
-            } else {
-              _this4.getEmpleados();
-
-              Swal.fire({
-                type: 'error',
-                title: 'Error al inhabilitar al empleado.',
-                text: 'El empleado no ha sido inhabilitado.'
-              });
-            }
-          })["catch"](function (error) {
-            console.log(error);
-          });
+          this.cambiarEstados('estado', 'Inactivo', empleado, this.titulo_exito_inactivar, this.desripcion_exito_inactivar, this.titulo_error_inactivar, this.desripcion_error_inactivar);
           break;
 
         case 'Inactivo':
-          axios.put('/empleados/estado/' + empleado.id, {
-            'estado': 'Activo'
-          }).then(function (response) {
-            var status = response.status;
-
-            if (status === 200) {
-              _this4.getEmpleados();
-
-              Swal.fire({
-                type: 'success',
-                title: 'Empleado activo exitosamente.',
-                text: 'El empleado se ha habilitado.'
-              });
-            } else {
-              _this4.getEmpleados();
-
-              Swal.fire({
-                type: 'error',
-                title: 'Error al habilitar al empleado.',
-                text: 'El empleado no ha sido habilitado.'
-              });
-            }
-          })["catch"](function (error) {
-            console.log(error);
-          });
+          this.cambiarEstados('estado', 'Activo', empleado, this.titulo_exito_activar, this.desripcion_exito_inactivar, this.titulo_error_activar, this.desripcion_error_activar);
           break;
       }
+    },
+    eliminarEmpleado: function eliminarEmpleado(empleado) {
+      var _this5 = this;
+
+      Swal.fire({
+        title: '¿Esta seguro de eliminar al empleado?',
+        text: "El registo de empleado no se podrá reestablecer.",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Eliminar'
+      }).then(function (result) {
+        if (result.value) {
+          _this5.cambiarEstados('estatus', 0, empleado, _this5.titulo_exito_eliminacion, _this5.desripcion_exito_eliminacion, _this5.titulo_error_eliminacion, _this5.desripcion_error_eliminacion);
+        }
+      });
     }
   },
   mounted: function mounted() {
@@ -38196,7 +38205,18 @@ var render = function() {
                               [_c("i", { staticClass: "fa fa-pencil-alt" })]
                             ),
                             _vm._v(" "),
-                            _vm._m(1, true)
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-outline-danger btn-sm",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.eliminarEmpleado(empleado)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fa fa-trash" })]
+                            )
                           ])
                         ])
                       }),
@@ -38309,7 +38329,7 @@ var render = function() {
                 domProps: { textContent: _vm._s(_vm.modal_titulo) }
               }),
               _vm._v(" "),
-              _vm._m(2)
+              _vm._m(1)
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
@@ -38694,14 +38714,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("button", { staticClass: "btn btn-outline-primary btn-sm" }, [
       _c("i", { staticClass: "fa fa-eye" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "btn btn-outline-danger btn-sm" }, [
-      _c("i", { staticClass: "fa fa-trash" })
     ])
   },
   function() {

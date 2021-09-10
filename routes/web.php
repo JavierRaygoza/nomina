@@ -17,5 +17,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::apiResource('empleados', 'EmpleadosController', ['except' => 'show']);
-Route::put('empleados/estado/{id}', 'EmpleadosController@estado');
+Route::apiResource('empleados', 'EmpleadosController', ['except' => ['show', 'destroy']]);
+Route::put('empleados/estado/{id}', 'EmpleadosController@estados');

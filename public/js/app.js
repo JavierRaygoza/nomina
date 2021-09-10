@@ -2299,6 +2299,67 @@ __webpack_require__.r(__webpack_exports__);
         'correo_electronico': []
       };
       $('#empleadoModal').modal('hide');
+    },
+    activarDesactivar: function activarDesactivar(empleado) {
+      var _this4 = this;
+
+      switch (empleado.estado) {
+        case 'Activo':
+          axios.put('/empleados/estado/' + empleado.id, {
+            'estado': 'Inactivo'
+          }).then(function (response) {
+            var status = response.status;
+
+            if (status === 200) {
+              _this4.getEmpleados();
+
+              Swal.fire({
+                type: 'success',
+                title: 'Empleado inactivo exitosamente.',
+                text: 'El empleado se ha inhabilitado.'
+              });
+            } else {
+              _this4.getEmpleados();
+
+              Swal.fire({
+                type: 'error',
+                title: 'Error al inhabilitar al empleado.',
+                text: 'El empleado no ha sido inhabilitado.'
+              });
+            }
+          })["catch"](function (error) {
+            console.log(error);
+          });
+          break;
+
+        case 'Inactivo':
+          axios.put('/empleados/estado/' + empleado.id, {
+            'estado': 'Activo'
+          }).then(function (response) {
+            var status = response.status;
+
+            if (status === 200) {
+              _this4.getEmpleados();
+
+              Swal.fire({
+                type: 'success',
+                title: 'Empleado activo exitosamente.',
+                text: 'El empleado se ha habilitado.'
+              });
+            } else {
+              _this4.getEmpleados();
+
+              Swal.fire({
+                type: 'error',
+                title: 'Error al habilitar al empleado.',
+                text: 'El empleado no ha sido habilitado.'
+              });
+            }
+          })["catch"](function (error) {
+            console.log(error);
+          });
+          break;
+      }
     }
   },
   mounted: function mounted() {
@@ -38086,7 +38147,14 @@ var render = function() {
                             empleado.estado === "Inactivo"
                               ? _c(
                                   "button",
-                                  { staticClass: "btn btn-success btn-sm" },
+                                  {
+                                    staticClass: "btn btn-success btn-sm",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.activarDesactivar(empleado)
+                                      }
+                                    }
+                                  },
                                   [_c("i", { staticClass: "fa fa-user-check" })]
                                 )
                               : _vm._e(),
@@ -38094,7 +38162,14 @@ var render = function() {
                             empleado.estado === "Activo"
                               ? _c(
                                   "button",
-                                  { staticClass: "btn btn-danger btn-sm" },
+                                  {
+                                    staticClass: "btn btn-danger btn-sm",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.activarDesactivar(empleado)
+                                      }
+                                    }
+                                  },
                                   [_c("i", { staticClass: "fa fa-user-slash" })]
                                 )
                               : _vm._e(),

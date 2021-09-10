@@ -18,3 +18,4 @@ Route::get('/', function () {
 });
 
 Route::apiResource('empleados', 'EmpleadosController', ['except' => 'show']);
+Route::put('empleados/estado/{id}', 'EmpleadosController@estado');

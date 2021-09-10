@@ -36,10 +36,10 @@
                                         <td v-text="empleado.estado" v-if="empleado.estado === 'Inactivo'" class="text-danger font-weight-bold"></td>
                                         <td v-text="empleado.estado" v-if="empleado.estado === 'Activo'" class="text-success font-weight-bold"></td>
                                         <td>
-                                            <button v-if="empleado.estado === 'Inactivo'" class="btn btn-success btn-sm">
+                                            <button @click="activarDesactivar(empleado)" v-if="empleado.estado === 'Inactivo'" class="btn btn-success btn-sm">
                                                 <i class="fa fa-user-check"></i>
                                             </button>
-                                            <button v-if="empleado.estado === 'Activo'" class="btn btn-danger btn-sm">
+                                            <button @click="activarDesactivar(empleado)" v-if="empleado.estado === 'Activo'" class="btn btn-danger btn-sm">
                                                 <i class="fa fa-user-slash"></i>
                                             </button>
                                             <button class="btn btn-outline-primary btn-sm">
@@ -353,6 +353,59 @@
                     'correo_electronico' : [],
                 };
                 $('#empleadoModal').modal('hide');
+            },
+            activarDesactivar(empleado){
+                switch (empleado.estado) {
+                    case 'Activo':
+                        axios.put('/empleados/estado/'+ empleado.id,{
+                        'estado' : 'Inactivo'
+                        }).then((response) => {
+                            let { status } = response;
+                            if( status === 200 ){
+                                this.getEmpleados();
+                                Swal.fire({
+                                    type  : 'success',
+                                    title : 'Empleado inactivo exitosamente.',
+                                    text  : 'El empleado se ha inhabilitado.',
+                                });
+                            } else {
+                                this.getEmpleados();
+                                Swal.fire({
+                                    type  : 'error',
+                                    title : 'Error al inhabilitar al empleado.',
+                                    text  : 'El empleado no ha sido inhabilitado.',
+                                });
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+                        break;
+
+                    case 'Inactivo':
+                        axios.put('/empleados/estado/'+ empleado.id,{
+                        'estado' : 'Activo'
+                        }).then((response) => {
+                            let { status } = response;
+                            if( status === 200 ){
+                                this.getEmpleados();
+                                Swal.fire({
+                                    type  : 'success',
+                                    title : 'Empleado activo exitosamente.',
+                                    text  : 'El empleado se ha habilitado.',
+                                });
+                            } else {
+                                this.getEmpleados();
+                                Swal.fire({
+                                    type  : 'error',
+                                    title : 'Error al habilitar al empleado.',
+                                    text  : 'El empleado no ha sido habilitado.',
+                                });
+                            }
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+                        break;
+                }
             },
         },
         mounted() {

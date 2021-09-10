@@ -64,7 +64,21 @@ class EmpleadosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(EmpleadoRequest $request, $id)
+    public function update(EmpleadoRequest $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        $empleado = Empleado::findOrFail($request->id);
+        $empleado->fill($request->all())->save();
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function estado(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
         $empleado = Empleado::findOrFail($request->id);

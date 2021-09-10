@@ -8,12 +8,14 @@
 
         <!-- Styles -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/fontawesome/css/all.css') }}">
     </head>
     <body class="bg-white">
         <div id="app">
-            <example-component></example-component>
+            <nomina-component></nomina-component>
         </div>
     </body>
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 </html>

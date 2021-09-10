@@ -8,11 +8,11 @@ use Illuminate\Support\Str;
 
 $factory->define(Empleado::class, function (Faker $faker) {
     return [
-        'codigo'             => $faker->name,
+        'codigo'             => Str::random(10),
         'nombre'             => $faker->name,
         'apellido_paterno'   => $faker->lastName,
         'apellido_materno'   => $faker->lastName,
         'correo_electronico' => $faker->unique()->safeEmail,
-        'tipo_contrato'      => Str::random(10),
+        'tipo_contrato'      => 'Temporal',
     ];
 });

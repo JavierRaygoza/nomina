@@ -1,221 +1,237 @@
 <template>
-    <div class="container">
-        <div class="row mt-5">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <!-- Inicio: Encabezado -->
-                            <div class="col-md-12 col-lg-9">
-                                <h1 v-text="titulo" class="font-weight-bold"></h1>
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#" v-text="app"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <span class="navbar-text ml-auto" v-text="bienvenido"></span>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row p-3">
+                                <!-- Inicio: Encabezado -->
+                                <div class="col-md-12 col-lg-9">
+                                    <h1 v-text="titulo" class="font-weight-bold"></h1>
+                                </div>
+                                <!-- Fin: Encabezado -->
+                                <!-- Inicio: Botón agregar empleado -->
+                                <div class="col-md-12 col-lg-3 text-lg-right" >
+                                    <button class="btn btn-outline-success btn-block" @click="accionEmpleado('agregar')" data-toggle="modal" data-target="#empleadoModal"><span v-text="agregar"></span><i class="fa fa-plus-circle"></i></button>
+                                </div>
+                                <!-- Fin: Botón agregar empleado -->
                             </div>
-                            <!-- Fin: Encabezado -->
-                            <!-- Inicio: Botón agregar empleado -->
-                            <div class="col-md-12 col-lg-3 text-lg-right" >
-                                <button class="btn btn-outline-success btn-block" @click="accionEmpleado('agregar')" data-toggle="modal" data-target="#empleadoModal"><span v-text="agregar"></span><i class="fa fa-plus-circle"></i></button>
-                            </div>
-                            <!-- Fin: Botón agregar empleado -->
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <!-- Inicio: thead con titulos -->
-                                <thead>
-                                    <tr>
-                                        <th v-text="lbl_codigo"></th>
-                                        <th v-text="lbl_nombre"></th>
-                                        <th v-text="lbl_apellido_paterno"></th>
-                                        <th v-text="lbl_estado"></th>
-                                        <th v-text="lbl_acciones"></th>
-                                    </tr>
-                                </thead>
-                                <!-- Fin: thead con titulos -->
-                                <!-- Inicio: tbody sin datos -->
-                                <tbody v-if="empleados.length === 0">
-                                    <td colspan="5">
-                                        <h4 class="text-danger text-center" v-text="lbl_sin_registros"></h4>
-                                    </td>
-                                </tbody>
-                                <!-- Fin: tbody sin datos -->
-                                <!-- Inicio: tbody con datos -->
-                                <tbody v-else>
-                                    <tr v-for="empleado in empleados" :key="empleado.id">
-                                        <td v-text="empleado.codigo"></td>
-                                        <td v-text="empleado.nombre"></td>
-                                        <td v-text="empleado.apellido_paterno"></td>
-                                        <td v-text="empleado.estado" v-if="empleado.estado === 'Inactivo'" class="text-danger font-weight-bold"></td>
-                                        <td v-text="empleado.estado" v-if="empleado.estado === 'Activo'" class="text-success font-weight-bold"></td>
-                                        <td>
-                                            <button @click="activarDesactivar(empleado)" v-if="empleado.estado === 'Inactivo'" class="btn btn-success btn-sm">
-                                                <i class="fa fa-user-check"></i>
-                                            </button>
-                                            <button @click="activarDesactivar(empleado)" v-if="empleado.estado === 'Activo'" class="btn btn-danger btn-sm">
-                                                <i class="fa fa-user-slash"></i>
-                                            </button>
-                                            <button @click="accionEmpleado('editar', empleado)" data-toggle="modal" data-target="#infoModal" class="btn btn-outline-primary btn-sm">
-                                                <i class="fa fa-eye"></i>
-                                            </button>
-                                            <button @click="accionEmpleado('editar', empleado)" data-toggle="modal" data-target="#empleadoModal" class="btn btn-outline-warning btn-sm">
-                                                <i class="fa fa-pencil-alt"></i>
-                                            </button>
-                                            <button @click="eliminarEmpleado(empleado)" class="btn btn-outline-danger btn-sm">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
+                            <div class="table-responsive">
+                                <table class="table table-bordered rounded">
+                                    <!-- Inicio: thead con titulos -->
+                                    <thead>
+                                        <tr>
+                                            <th v-text="lbl_codigo"></th>
+                                            <th v-text="lbl_nombre"></th>
+                                            <th v-text="lbl_apellido_paterno"></th>
+                                            <th class="text-center" v-text="lbl_estado"></th>
+                                            <th class="text-center" v-text="lbl_acciones"></th>
+                                        </tr>
+                                    </thead>
+                                    <!-- Fin: thead con titulos -->
+                                    <!-- Inicio: tbody sin datos -->
+                                    <tbody v-if="empleados.length === 0">
+                                        <td colspan="5">
+                                            <h4 class="text-danger text-center" v-text="lbl_sin_registros"></h4>
                                         </td>
-                                    </tr>
-                                </tbody>
-                                <!-- Fin: tbody con datos -->
-                            </table>
-                      </div>
-                      <!-- Inicio: Paginación -->
-                      <div class="row">
-                          <div class="col-md-12">
-                                <nav aria-label="...">
-                                  <ul class="pagination">
-                                    <li class="page-item" v-if="pagination.current_page > 1">
-                                      <a @click="cambiarPagina(pagination.current_page - 1, search)" class="page-link" href="#">Anterior</a>
-                                    </li>
-                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a @click.prevent="cambiarPagina(page, search)" class="page-link" href="#" v-text="page"></a></li>
-                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                      <a @click="cambiarPagina(pagination.current_page + 1, search)" class="page-link" href="#">Siguiente</a>
-                                    </li>
-                                  </ul>
-                                </nav>
-                          </div>
-                      </div>
-                      <!-- Fin: Paginación -->
+                                    </tbody>
+                                    <!-- Fin: tbody sin datos -->
+                                    <!-- Inicio: tbody con datos -->
+                                    <tbody v-else>
+                                        <tr v-for="empleado in empleados" :key="empleado.id">
+                                            <td v-text="empleado.codigo"></td>
+                                            <td v-text="empleado.nombre"></td>
+                                            <td v-text="empleado.apellido_paterno"></td>
+                                            <td v-text="empleado.estado" v-if="empleado.estado === 'Inactivo'" class="text-danger font-weight-bold text-center"></td>
+                                            <td v-text="empleado.estado" v-if="empleado.estado === 'Activo'" class="text-success font-weight-bold text-center"></td>
+                                            <td class="text-center">
+                                                <button @click="activarDesactivar(empleado)" data-placement="top" title="Activar usuario" v-if="empleado.estado === 'Inactivo'" class="btn btn-success btn-sm">
+                                                    <i class="fa fa-user-check"></i>
+                                                </button>
+                                                <button @click="activarDesactivar(empleado)" data-placement="top" title="Desactivar usuario" v-if="empleado.estado === 'Activo'" class="btn btn-danger btn-sm">
+                                                    <i class="fa fa-user-slash"></i>
+                                                </button>
+                                                <button @click="accionEmpleado('editar', empleado)" data-placement="top" title="Ver información de usuario" data-toggle="modal" data-target="#infoModal" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                                <button  @click="accionEmpleado('editar', empleado)" data-placement="top" title="Editar usuario" data-toggle="modal" data-target="#empleadoModal" class="btn btn-outline-warning btn-sm">
+                                                    <i class="fa fa-pencil-alt"></i>
+                                                </button>
+                                                <button @click="eliminarEmpleado(empleado)" data-placement="top" title="Eliminar usuario" class="btn btn-outline-danger btn-sm">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <!-- Fin: tbody con datos -->
+                                </table>
+                        </div>
+                        <!-- Inicio: Paginación -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                    <nav aria-label="...">
+                                    <ul class="pagination">
+                                        <li class="page-item" v-if="pagination.current_page > 1">
+                                        <a @click="cambiarPagina(pagination.current_page - 1, search)" class="page-link" href="#">Anterior</a>
+                                        </li>
+                                        <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                            <a @click.prevent="cambiarPagina(page, search)" class="page-link" href="#" v-text="page"></a></li>
+                                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                        <a @click="cambiarPagina(pagination.current_page + 1, search)" class="page-link" href="#">Siguiente</a>
+                                        </li>
+                                    </ul>
+                                    </nav>
+                            </div>
+                        </div>
+                        <!-- Fin: Paginación -->
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Inicio: Modal para mostrar la creación de empleado -->
-        <div class="modal fade" id="empleadoModal" tabindex="-1" aria-labelledby="empleadoModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="empleadoModalLabel" v-text="modal_titulo"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <label for="codigo" v-text="lbl_codigo" id="codigo"></label>
-                                <input type="text" name="codigo" v-model="codigo" class="form-control">
-                                <div class="row">
-                                    <ul v-if="errors.codigo !== []">
-                                        <li v-for="error in errors.codigo" :key="error.codigo" v-text="error" class="text-danger"></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <label for="nombre" v-text="lbl_nombre" id="nombre"></label>
-                                <input type="text" name="nombre" v-model="nombre" class="form-control">
-                                <div class="row">
-                                    <ul v-if="errors.nombre !== []">
-                                        <li v-for="error in errors.nombre" :key="error.nombre" v-text="error" class="text-danger"></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <label for="apellido_paterno" v-text="lbl_apellido_paterno" id="apellido_paterno"></label>
-                                <input type="text" name="apellido_paterno" v-model="apellido_paterno" class="form-control">
-                                <div class="row">
-                                    <ul v-if="errors.apellido_paterno !== []">
-                                        <li v-for="error in errors.apellido_paterno" :key="error.apellido_paterno" v-text="error" class="text-danger"></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <label for="apellido_materno" v-text="lbl_apellido_materno" id="apellido_materno"></label>
-                                <input type="text" name="apellido_materno" v-model="apellido_materno" class="form-control">
-                                <div class="row">
-                                    <ul v-if="errors.apellido_materno !== []">
-                                        <li v-for="error in errors.apellido_materno" :key="error.apellido_materno" v-text="error" class="text-danger"></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <label for="correo_electronico" v-text="lbl_correo_electronico" id="correo_electronico"></label>
-                                <input type="email" name="correo_electronico" v-model="correo_electronico" class="form-control">
-                                <div class="row">
-                                    <ul v-if="errors.correo_electronico !== []">
-                                        <li v-for="error in errors.correo_electronico" :key="error.correo_electronico" v-text="error" class="text-danger"></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <label for="tipo_contrato" v-text="lbl_tipo_contrato"></label>
-                                <select name="tipo_contrato" id="tipo_contrato" v-model="tipo_contrato" class="form-control custom-select">
-                                    <option value="Prueba" selected>Prueba</option>
-                                    <option value="Temporal" selected>Temporal</option>
-                                    <option value="Indefinido" selected>Indefinido</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button @click="limpiarModal()" type="button" class="btn btn-danger" data-dismiss="modal" v-text="btn_cerrar"></button>
-                    <button v-if="accion === 'agregar'" @click="agregarEmpleado()" type="button" class="btn btn-primary" v-text="btn_guardar"></button>
-                    <button v-if="accion === 'editar'" @click="actualizarEmpleado()" type="button" class="btn btn-primary" v-text="btn_guardar"></button>
-                </div>
+            <div class="row mt-5">
+                <div class="col-md-12 col-lg-4 ml-auto text-right">
+                    <p class="text-monospace">Javier Guzmán - 2021</p>
                 </div>
             </div>
-        </div>
-        <!-- Fin: Modal para mostrar la creación de empleado -->
-        <!-- Inicio: Modal para mostrar informacion de empleado -->
-        <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title font-weight-bold" id="infoModalLabel" v-text="nombre + ' ' + apellido_paterno"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <tbody>
-                            <tr><p class="font-weight-bold text-muted" v-text="lbl_nombre"></p></tr>
-                            <tr><p class="font-weight-bold text-dark" v-text="nombre + ' ' + apellido_paterno + ' ' + apellido_materno"></p></tr>
-                            <tr><p class="font-weight-bold text-muted" v-text="lbl_correo_electronico"></p></tr>
-                            <tr>
-                                <p class="font-weight-bold text-dark">
-                                    <a v-bind:href="'mailto:' + correo_electronico"> {{ correo_electronico }} </a>
-                                </p>
-                            </tr>
-                            <tr><p class="font-weight-bold text-muted" v-text="lbl_tipo_contrato"></p></tr>
-                            <tr><p class="font-weight-bold text-dark" v-text="tipo_contrato"></p></tr>
-                            <tr><p class="font-weight-bold text-muted" v-text="lbl_estado"></p></tr>
-                            <tr><p v-if="estado == 'Activo'" class="font-weight-bold text-success" v-text="estado"></p></tr>
-                            <tr><p v-if="estado == 'Inactivo'" class="font-weight-bold text-danger" v-text="estado"></p></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button @click="limpiarModal()" type="button" class="btn btn-danger" data-dismiss="modal" v-text="btn_cerrar"></button>
-                </div>
+            <!-- Inicio: Modal para la creación o edición de empleado -->
+            <div class="modal fade" id="empleadoModal" tabindex="-1" aria-labelledby="empleadoModalLabel" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="empleadoModalLabel" v-text="modal_titulo"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="limpiarModal()">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="codigo" v-text="lbl_codigo" id="codigo"></label>
+                                    <input type="text" name="codigo" v-model="codigo" class="form-control">
+                                    <div class="row">
+                                        <ul v-if="errors.codigo !== []">
+                                            <li v-for="error in errors.codigo" :key="error.codigo" v-text="error" class="text-danger"></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="nombre" v-text="lbl_nombre" id="nombre"></label>
+                                    <input type="text" name="nombre" v-model="nombre" class="form-control">
+                                    <div class="row">
+                                        <ul v-if="errors.nombre !== []">
+                                            <li v-for="error in errors.nombre" :key="error.nombre" v-text="error" class="text-danger"></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="apellido_paterno" v-text="lbl_apellido_paterno" id="apellido_paterno"></label>
+                                    <input type="text" name="apellido_paterno" v-model="apellido_paterno" class="form-control">
+                                    <div class="row">
+                                        <ul v-if="errors.apellido_paterno !== []">
+                                            <li v-for="error in errors.apellido_paterno" :key="error.apellido_paterno" v-text="error" class="text-danger"></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="apellido_materno" v-text="lbl_apellido_materno" id="apellido_materno"></label>
+                                    <input type="text" name="apellido_materno" v-model="apellido_materno" class="form-control">
+                                    <div class="row">
+                                        <ul v-if="errors.apellido_materno !== []">
+                                            <li v-for="error in errors.apellido_materno" :key="error.apellido_materno" v-text="error" class="text-danger"></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="correo_electronico" v-text="lbl_correo_electronico" id="correo_electronico"></label>
+                                    <input type="email" name="correo_electronico" v-model="correo_electronico" class="form-control">
+                                    <div class="row">
+                                        <ul v-if="errors.correo_electronico !== []">
+                                            <li v-for="error in errors.correo_electronico" :key="error.correo_electronico" v-text="error" class="text-danger"></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-6">
+                                <div class="form-group">
+                                    <label for="tipo_contrato" v-text="lbl_tipo_contrato"></label>
+                                    <select name="tipo_contrato" id="tipo_contrato" v-model="tipo_contrato" class="form-control custom-select">
+                                        <option value="Prueba" selected>Prueba</option>
+                                        <option value="Temporal" selected>Temporal</option>
+                                        <option value="Indefinido" selected>Indefinido</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="limpiarModal()" type="button" class="btn btn-danger" data-dismiss="modal" v-text="btn_cerrar"></button>
+                        <button v-if="accion === 'agregar'" @click="agregarEmpleado()" type="button" class="btn btn-primary" v-text="btn_guardar"></button>
+                        <button v-if="accion === 'editar'" @click="actualizarEmpleado()" type="button" class="btn btn-primary" v-text="btn_guardar"></button>
+                    </div>
+                    </div>
                 </div>
             </div>
+            <!-- Fin: Modal para la creación o edición de empleado -->
+            <!-- Inicio: Modal para mostrar informacion de empleado -->
+            <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-weight-bold" id="infoModalLabel" v-text="nombre + ' ' + apellido_paterno"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="limpiarModal()">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <tbody>
+                                <tr><p class="font-weight-bold text-muted" v-text="lbl_nombre"></p></tr>
+                                <tr><p class="font-weight-bold text-dark" v-text="nombre + ' ' + apellido_paterno + ' ' + apellido_materno"></p></tr>
+                                <tr><p class="font-weight-bold text-muted" v-text="lbl_correo_electronico"></p></tr>
+                                <tr>
+                                    <p class="font-weight-bold text-dark">
+                                        <a v-bind:href="'mailto:' + correo_electronico"> {{ correo_electronico }} </a>
+                                    </p>
+                                </tr>
+                                <tr><p class="font-weight-bold text-muted" v-text="lbl_tipo_contrato"></p></tr>
+                                <tr><p class="font-weight-bold text-dark" v-text="tipo_contrato"></p></tr>
+                                <tr><p class="font-weight-bold text-muted" v-text="lbl_estado"></p></tr>
+                                <tr><p v-if="estado == 'Activo'" class="font-weight-bold text-success" v-text="estado"></p></tr>
+                                <tr><p v-if="estado == 'Inactivo'" class="font-weight-bold text-danger" v-text="estado"></p></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="limpiarModal()" type="button" class="btn btn-danger" data-dismiss="modal" v-text="btn_cerrar"></button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fin: Modal para mostrar informacion de empleado -->
         </div>
-        <!-- Fin: Modal para mostrar informacion de empleado -->
     </div>
 </template>
 
@@ -226,6 +242,8 @@
         */
         data(){
             return{
+                app                          : 'Dropstudio/Prueba',
+                bienvenido                   : 'Bienvenido',
                 titulo                       : 'Lista de empleados',
                 agregar                      : 'Agregar empleado',
                 lbl_codigo                   : 'Código',
@@ -233,7 +251,7 @@
                 lbl_apellido_paterno         : 'Apellido paterno',
                 lbl_apellido_materno         : 'Apellido materno',
                 lbl_correo_electronico       : 'Correo electrónico',
-                lbl_tipo_contrato            : 'Tipo de contraro',
+                lbl_tipo_contrato            : 'Tipo de contrato',
                 lbl_estado                   : 'Estado',
                 lbl_acciones                 : 'Acciones',
                 lbl_sin_registros            : 'No hay registros disponibles',

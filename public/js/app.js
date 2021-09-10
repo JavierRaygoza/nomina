@@ -1989,6 +1989,96 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1997,10 +2087,31 @@ __webpack_require__.r(__webpack_exports__);
       lbl_codigo: 'Código',
       lbl_nombre: 'Nombre',
       lbl_apellido_paterno: 'Apellido paterno',
+      lbl_apellido_materno: 'Apellido materno',
+      lbl_correo_electronico: 'Correo electrónico',
+      lbl_tipo_contrato: 'Tipo de contraro',
       lbl_estado: 'Estado',
       lbl_acciones: 'Acciones',
       lbl_sin_registros: 'No hay registros disponibles',
       empleados: [],
+      errors: {
+        'nombre': [],
+        'codigo': [],
+        'apellido_paterno': [],
+        'apellido_materno': [],
+        'correo_electronico': []
+      },
+      id: null,
+      codigo: null,
+      nombre: null,
+      apellido_paterno: null,
+      apellido_materno: null,
+      correo_electronico: null,
+      accion: 'agregar',
+      tipo_contrato: 'Prueba',
+      btn_cerrar: 'Cerrar',
+      btn_guardar: 'Guardar',
+      modal_titulo: 'Agregar empleado',
       pagination: {
         'total': 0,
         'current_page': 0,
@@ -2009,7 +2120,6 @@ __webpack_require__.r(__webpack_exports__);
         'from': 0,
         'to': 0
       },
-      offset: 3,
       search: ''
     };
   },
@@ -2064,6 +2174,131 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    agregarEmpleado: function agregarEmpleado() {
+      var _this2 = this;
+
+      axios.post('/empleados', {
+        'codigo': this.codigo,
+        'nombre': this.nombre,
+        'apellido_paterno': this.apellido_paterno,
+        'apellido_materno': this.apellido_materno,
+        'correo_electronico': this.correo_electronico,
+        'tipo_contrato': this.tipo_contrato
+      }).then(function (response) {
+        console.log(response);
+        var status = response.status;
+
+        if (status === 200) {
+          _this2.limpiarModal();
+
+          _this2.getEmpleados();
+
+          Swal.fire({
+            type: 'success',
+            title: 'Empleado agregado exitosamente.',
+            text: 'El empleado se ha registrado.'
+          });
+        } else {
+          _this2.limpiarModal();
+
+          _this2.getEmpleados();
+
+          Swal.fire({
+            type: 'error',
+            title: 'Error al registrar al empleado.',
+            text: 'El empleado no ha sido registrado.'
+          });
+        }
+      })["catch"](function (error) {
+        _this2.errors = errors = {
+          'nombre': [],
+          'codigo': [],
+          'apellido_paterno': [],
+          'apellido_materno': [],
+          'correo_electronico': []
+        };
+        var response = error.response,
+            _error$response = error.response,
+            data = _error$response.data,
+            errors = _error$response.data.errors;
+        _this2.errors = errors;
+        console.log(error);
+      });
+    },
+    actualizarEmpleado: function actualizarEmpleado() {
+      var _this3 = this;
+
+      axios.put('/empleados/' + this.id, {
+        'id': this.id,
+        'codigo': this.codigo,
+        'nombre': this.nombre,
+        'apellido_paterno': this.apellido_paterno,
+        'apellido_materno': this.apellido_materno,
+        'correo_electronico': this.correo_electronico,
+        'tipo_contrato': this.tipo_contrato
+      }).then(function (response) {
+        var status = response.status;
+
+        if (status === 200) {
+          _this3.limpiarModal();
+
+          _this3.getEmpleados();
+
+          Swal.fire({
+            type: 'success',
+            title: 'Empleado actualizado exitosamente.',
+            text: 'El empleado se ha actualizado.'
+          });
+        } else {
+          _this3.limpiarModal();
+
+          _this3.getEmpleados();
+
+          Swal.fire({
+            type: 'error',
+            title: 'Error al actualizar al empleado.',
+            text: 'El empleado no ha sido actualizado.'
+          });
+        }
+      })["catch"](function (error) {
+        var response = error.response,
+            _error$response2 = error.response,
+            data = _error$response2.data,
+            errors = _error$response2.data.errors;
+        _this3.errors = errors;
+        console.log(error);
+      });
+    },
+    accionEmpleado: function accionEmpleado(accion) {
+      var modelo = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+      this.accion = accion;
+
+      if (accion === 'editar') {
+        this.modal_titulo = 'Actualizar empleado', this.id = modelo.id;
+        this.codigo = modelo.codigo;
+        this.nombre = modelo.nombre;
+        this.apellido_paterno = modelo.apellido_paterno;
+        this.apellido_materno = modelo.apellido_materno;
+        this.correo_electronico = modelo.correo_electronico;
+        this.tipo_contrato = modelo.tipo_contrato;
+      }
+    },
+    limpiarModal: function limpiarModal() {
+      this.modal_titulo = 'Agregar empleado', this.codigo = null;
+      this.nombre = null;
+      this.apellido_paterno = null;
+      this.apellido_materno = null;
+      this.correo_electronico = null;
+      this.tipo_contrato = 'Prueba';
+      this.errors = {
+        'nombre': [],
+        'codigo': [],
+        'apellido_paterno': [],
+        'apellido_materno': [],
+        'correo_electronico': []
+      };
+      $('#empleadoModal').modal('hide');
     }
   },
   mounted: function mounted() {
@@ -37735,226 +37970,641 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c(
-      "div",
-      { staticClass: "row vh-100 justify-content-center align-items-center" },
-      [
-        _c("div", { staticClass: "col-12" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-body" }, [
-              _c("div", { staticClass: "row" }, [
-                _c("div", { staticClass: "col-md-12 col-lg-9" }, [
-                  _c("h1", {
-                    staticClass: "font-weight-bold",
-                    domProps: { textContent: _vm._s(_vm.titulo) }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "col-md-12 col-lg-3 text-lg-right" }, [
-                  _c(
-                    "button",
-                    { staticClass: "btn btn-outline-success btn-block" },
-                    [
-                      _c("span", {
-                        domProps: { textContent: _vm._s(_vm.titulo) }
-                      }),
-                      _c("i", { staticClass: "fa fa-plus-circle" })
-                    ]
-                  )
-                ])
+    _c("div", { staticClass: "row mt-5" }, [
+      _c("div", { staticClass: "col-12" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-12 col-lg-9" }, [
+                _c("h1", {
+                  staticClass: "font-weight-bold",
+                  domProps: { textContent: _vm._s(_vm.titulo) }
+                })
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "table-responsive" }, [
-                _c("table", { staticClass: "table table-hover" }, [
-                  _c("thead", [
-                    _c("tr", [
-                      _c("th", {
-                        domProps: { textContent: _vm._s(_vm.lbl_codigo) }
-                      }),
-                      _vm._v(" "),
-                      _c("th", {
-                        domProps: { textContent: _vm._s(_vm.lbl_nombre) }
-                      }),
-                      _vm._v(" "),
-                      _c("th", {
-                        domProps: {
-                          textContent: _vm._s(_vm.lbl_apellido_paterno)
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("th", {
-                        domProps: { textContent: _vm._s(_vm.lbl_estado) }
-                      }),
-                      _vm._v(" "),
-                      _c("th", {
-                        domProps: { textContent: _vm._s(_vm.lbl_acciones) }
-                      })
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _vm.empleados.length === 0
-                    ? _c("tbody", [
-                        _c("td", { attrs: { colspan: "4" } }, [
-                          _c("h4", {
-                            staticClass: "text-danger text-center",
-                            domProps: {
-                              textContent: _vm._s(_vm.lbl_sin_registros)
-                            }
-                          })
-                        ])
+              _c("div", { staticClass: "col-md-12 col-lg-3 text-lg-right" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-success btn-block",
+                    attrs: {
+                      "data-toggle": "modal",
+                      "data-target": "#empleadoModal"
+                    },
+                    on: {
+                      click: function($event) {
+                        return _vm.accionEmpleado("agregar")
+                      }
+                    }
+                  },
+                  [
+                    _c("span", {
+                      domProps: { textContent: _vm._s(_vm.agregar) }
+                    }),
+                    _c("i", { staticClass: "fa fa-plus-circle" })
+                  ]
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "table-responsive" }, [
+              _c("table", { staticClass: "table table-hover" }, [
+                _c("thead", [
+                  _c("tr", [
+                    _c("th", {
+                      domProps: { textContent: _vm._s(_vm.lbl_codigo) }
+                    }),
+                    _vm._v(" "),
+                    _c("th", {
+                      domProps: { textContent: _vm._s(_vm.lbl_nombre) }
+                    }),
+                    _vm._v(" "),
+                    _c("th", {
+                      domProps: {
+                        textContent: _vm._s(_vm.lbl_apellido_paterno)
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("th", {
+                      domProps: { textContent: _vm._s(_vm.lbl_estado) }
+                    }),
+                    _vm._v(" "),
+                    _c("th", {
+                      domProps: { textContent: _vm._s(_vm.lbl_acciones) }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm.empleados.length === 0
+                  ? _c("tbody", [
+                      _c("td", { attrs: { colspan: "5" } }, [
+                        _c("h4", {
+                          staticClass: "text-danger text-center",
+                          domProps: {
+                            textContent: _vm._s(_vm.lbl_sin_registros)
+                          }
+                        })
                       ])
-                    : _c(
-                        "tbody",
-                        _vm._l(_vm.empleados, function(empleado) {
-                          return _c("tr", { key: empleado.id }, [
-                            _c("td", {
-                              domProps: { textContent: _vm._s(empleado.codigo) }
-                            }),
-                            _vm._v(" "),
-                            _c("td", {
-                              domProps: { textContent: _vm._s(empleado.nombre) }
-                            }),
-                            _vm._v(" "),
-                            _c("td", {
-                              domProps: {
-                                textContent: _vm._s(empleado.apellido_paterno)
-                              }
-                            }),
-                            _vm._v(" "),
+                    ])
+                  : _c(
+                      "tbody",
+                      _vm._l(_vm.empleados, function(empleado) {
+                        return _c("tr", { key: empleado.id }, [
+                          _c("td", {
+                            domProps: { textContent: _vm._s(empleado.codigo) }
+                          }),
+                          _vm._v(" "),
+                          _c("td", {
+                            domProps: { textContent: _vm._s(empleado.nombre) }
+                          }),
+                          _vm._v(" "),
+                          _c("td", {
+                            domProps: {
+                              textContent: _vm._s(empleado.apellido_paterno)
+                            }
+                          }),
+                          _vm._v(" "),
+                          empleado.estado === "Inactivo"
+                            ? _c("td", {
+                                staticClass: "text-danger font-weight-bold",
+                                domProps: {
+                                  textContent: _vm._s(empleado.estado)
+                                }
+                              })
+                            : _vm._e(),
+                          _vm._v(" "),
+                          empleado.estado === "Activo"
+                            ? _c("td", {
+                                staticClass: "text-success font-weight-bold",
+                                domProps: {
+                                  textContent: _vm._s(empleado.estado)
+                                }
+                              })
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c("td", [
                             empleado.estado === "Inactivo"
-                              ? _c("td", {
-                                  staticClass: "text-danger font-weight-bold",
-                                  domProps: {
-                                    textContent: _vm._s(empleado.estado)
-                                  }
-                                })
+                              ? _c(
+                                  "button",
+                                  { staticClass: "btn btn-success btn-sm" },
+                                  [_c("i", { staticClass: "fa fa-user-check" })]
+                                )
                               : _vm._e(),
                             _vm._v(" "),
                             empleado.estado === "Activo"
-                              ? _c("td", {
-                                  staticClass: "text-success font-weight-bold",
-                                  domProps: {
-                                    textContent: _vm._s(empleado.estado)
-                                  }
-                                })
+                              ? _c(
+                                  "button",
+                                  { staticClass: "btn btn-danger btn-sm" },
+                                  [_c("i", { staticClass: "fa fa-user-slash" })]
+                                )
                               : _vm._e(),
                             _vm._v(" "),
-                            _c("td", [
-                              empleado.estado === "Inactivo"
-                                ? _c(
-                                    "button",
-                                    { staticClass: "btn btn-success btn-sm" },
-                                    [
-                                      _c("i", {
-                                        staticClass: "fa fa-user-check"
-                                      })
-                                    ]
-                                  )
-                                : _vm._e(),
-                              _vm._v(" "),
-                              empleado.estado === "Activo"
-                                ? _c(
-                                    "button",
-                                    { staticClass: "btn btn-danger btn-sm" },
-                                    [
-                                      _c("i", {
-                                        staticClass: "fa fa-user-slash"
-                                      })
-                                    ]
-                                  )
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm._m(0, true),
-                              _vm._v(" "),
-                              _vm._m(1, true),
-                              _vm._v(" "),
-                              _vm._m(2, true)
-                            ])
+                            _vm._m(0, true),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-outline-warning btn-sm",
+                                attrs: {
+                                  "data-toggle": "modal",
+                                  "data-target": "#empleadoModal"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.accionEmpleado(
+                                      "editar",
+                                      empleado
+                                    )
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fa fa-pencil-alt" })]
+                            ),
+                            _vm._v(" "),
+                            _vm._m(1, true)
                           ])
-                        }),
-                        0
-                      )
+                        ])
+                      }),
+                      0
+                    )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-12" }, [
+                _c("nav", { attrs: { "aria-label": "..." } }, [
+                  _c(
+                    "ul",
+                    { staticClass: "pagination" },
+                    [
+                      _vm.pagination.current_page > 1
+                        ? _c("li", { staticClass: "page-item" }, [
+                            _c(
+                              "a",
+                              {
+                                staticClass: "page-link",
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.cambiarPagina(
+                                      _vm.pagination.current_page - 1,
+                                      _vm.search
+                                    )
+                                  }
+                                }
+                              },
+                              [_vm._v("Anterior")]
+                            )
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm._l(_vm.pagesNumber, function(page) {
+                        return _c(
+                          "li",
+                          {
+                            key: page,
+                            staticClass: "page-item",
+                            class: [page == _vm.isActived ? "active" : ""]
+                          },
+                          [
+                            _c("a", {
+                              staticClass: "page-link",
+                              attrs: { href: "#" },
+                              domProps: { textContent: _vm._s(page) },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.cambiarPagina(page, _vm.search)
+                                }
+                              }
+                            })
+                          ]
+                        )
+                      }),
+                      _vm._v(" "),
+                      _vm.pagination.current_page < _vm.pagination.last_page
+                        ? _c("li", { staticClass: "page-item" }, [
+                            _c(
+                              "a",
+                              {
+                                staticClass: "page-link",
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.cambiarPagina(
+                                      _vm.pagination.current_page + 1,
+                                      _vm.search
+                                    )
+                                  }
+                                }
+                              },
+                              [_vm._v("Siguiente")]
+                            )
+                          ])
+                        : _vm._e()
+                    ],
+                    2
+                  )
+                ])
+              ])
+            ])
+          ])
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "empleadoModal",
+          tabindex: "-1",
+          "aria-labelledby": "empleadoModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c("h5", {
+                staticClass: "modal-title",
+                attrs: { id: "empleadoModalLabel" },
+                domProps: { textContent: _vm._s(_vm.modal_titulo) }
+              }),
+              _vm._v(" "),
+              _vm._m(2)
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-body" }, [
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-md-12 col-lg-6" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", {
+                      attrs: { for: "codigo", id: "codigo" },
+                      domProps: { textContent: _vm._s(_vm.lbl_codigo) }
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.codigo,
+                          expression: "codigo"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", name: "codigo" },
+                      domProps: { value: _vm.codigo },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.codigo = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row" }, [
+                      _vm.errors.codigo !== []
+                        ? _c(
+                            "ul",
+                            _vm._l(_vm.errors.codigo, function(error) {
+                              return _c("li", {
+                                key: error.codigo,
+                                staticClass: "text-danger",
+                                domProps: { textContent: _vm._s(error) }
+                              })
+                            }),
+                            0
+                          )
+                        : _vm._e()
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-12 col-lg-6" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", {
+                      attrs: { for: "nombre", id: "nombre" },
+                      domProps: { textContent: _vm._s(_vm.lbl_nombre) }
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.nombre,
+                          expression: "nombre"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", name: "nombre" },
+                      domProps: { value: _vm.nombre },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.nombre = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row" }, [
+                      _vm.errors.nombre !== []
+                        ? _c(
+                            "ul",
+                            _vm._l(_vm.errors.nombre, function(error) {
+                              return _c("li", {
+                                key: error.nombre,
+                                staticClass: "text-danger",
+                                domProps: { textContent: _vm._s(error) }
+                              })
+                            }),
+                            0
+                          )
+                        : _vm._e()
+                    ])
+                  ])
                 ])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "row" }, [
-                _c("div", { staticClass: "col-md-12" }, [
-                  _c("nav", { attrs: { "aria-label": "..." } }, [
-                    _c(
-                      "ul",
-                      { staticClass: "pagination" },
-                      [
-                        _vm.pagination.current_page > 1
-                          ? _c("li", { staticClass: "page-item" }, [
-                              _c(
-                                "a",
-                                {
-                                  staticClass: "page-link",
-                                  attrs: { href: "#" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.cambiarPagina(
-                                        _vm.pagination.current_page - 1,
-                                        _vm.search
-                                      )
-                                    }
-                                  }
-                                },
-                                [_vm._v("Anterior")]
-                              )
-                            ])
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _vm._l(_vm.pagesNumber, function(page) {
-                          return _c(
-                            "li",
-                            {
-                              key: page,
-                              staticClass: "page-item",
-                              class: [page == _vm.isActived ? "active" : ""]
-                            },
-                            [
-                              _c("a", {
-                                staticClass: "page-link",
-                                attrs: { href: "#" },
-                                domProps: { textContent: _vm._s(page) },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.cambiarPagina(page, _vm.search)
-                                  }
-                                }
-                              })
-                            ]
-                          )
-                        }),
-                        _vm._v(" "),
-                        _vm.pagination.current_page < _vm.pagination.last_page
-                          ? _c("li", { staticClass: "page-item" }, [
-                              _c(
-                                "a",
-                                {
-                                  staticClass: "page-link",
-                                  attrs: { href: "#" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.cambiarPagina(
-                                        _vm.pagination.current_page + 1,
-                                        _vm.search
-                                      )
-                                    }
-                                  }
-                                },
-                                [_vm._v("Siguiente")]
-                              )
-                            ])
-                          : _vm._e()
+                _c("div", { staticClass: "col-md-12 col-lg-6" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", {
+                      attrs: {
+                        for: "apellido_paterno",
+                        id: "apellido_paterno"
+                      },
+                      domProps: {
+                        textContent: _vm._s(_vm.lbl_apellido_paterno)
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.apellido_paterno,
+                          expression: "apellido_paterno"
+                        }
                       ],
-                      2
+                      staticClass: "form-control",
+                      attrs: { type: "text", name: "apellido_paterno" },
+                      domProps: { value: _vm.apellido_paterno },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.apellido_paterno = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row" }, [
+                      _vm.errors.apellido_paterno !== []
+                        ? _c(
+                            "ul",
+                            _vm._l(_vm.errors.apellido_paterno, function(
+                              error
+                            ) {
+                              return _c("li", {
+                                key: error.apellido_paterno,
+                                staticClass: "text-danger",
+                                domProps: { textContent: _vm._s(error) }
+                              })
+                            }),
+                            0
+                          )
+                        : _vm._e()
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-12 col-lg-6" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", {
+                      attrs: {
+                        for: "apellido_materno",
+                        id: "apellido_materno"
+                      },
+                      domProps: {
+                        textContent: _vm._s(_vm.lbl_apellido_materno)
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.apellido_materno,
+                          expression: "apellido_materno"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", name: "apellido_materno" },
+                      domProps: { value: _vm.apellido_materno },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.apellido_materno = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row" }, [
+                      _vm.errors.apellido_materno !== []
+                        ? _c(
+                            "ul",
+                            _vm._l(_vm.errors.apellido_materno, function(
+                              error
+                            ) {
+                              return _c("li", {
+                                key: error.apellido_materno,
+                                staticClass: "text-danger",
+                                domProps: { textContent: _vm._s(error) }
+                              })
+                            }),
+                            0
+                          )
+                        : _vm._e()
+                    ])
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "row" }, [
+                _c("div", { staticClass: "col-md-12 col-lg-6" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", {
+                      attrs: {
+                        for: "correo_electronico",
+                        id: "correo_electronico"
+                      },
+                      domProps: {
+                        textContent: _vm._s(_vm.lbl_correo_electronico)
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.correo_electronico,
+                          expression: "correo_electronico"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "email", name: "correo_electronico" },
+                      domProps: { value: _vm.correo_electronico },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.correo_electronico = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "row" }, [
+                      _vm.errors.correo_electronico !== []
+                        ? _c(
+                            "ul",
+                            _vm._l(_vm.errors.correo_electronico, function(
+                              error
+                            ) {
+                              return _c("li", {
+                                key: error.correo_electronico,
+                                staticClass: "text-danger",
+                                domProps: { textContent: _vm._s(error) }
+                              })
+                            }),
+                            0
+                          )
+                        : _vm._e()
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-12 col-lg-6" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", {
+                      attrs: { for: "tipo_contrato" },
+                      domProps: { textContent: _vm._s(_vm.lbl_tipo_contrato) }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.tipo_contrato,
+                            expression: "tipo_contrato"
+                          }
+                        ],
+                        staticClass: "form-control custom-select",
+                        attrs: { name: "tipo_contrato", id: "tipo_contrato" },
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.tipo_contrato = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c(
+                          "option",
+                          { attrs: { value: "Prueba", selected: "" } },
+                          [_vm._v("Prueba")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "option",
+                          { attrs: { value: "Temporal", selected: "" } },
+                          [_vm._v("Temporal")]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "option",
+                          { attrs: { value: "Indefinido", selected: "" } },
+                          [_vm._v("Indefinido")]
+                        )
+                      ]
                     )
                   ])
                 ])
               ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-footer" }, [
+              _c("button", {
+                staticClass: "btn btn-danger",
+                attrs: { type: "button", "data-dismiss": "modal" },
+                domProps: { textContent: _vm._s(_vm.btn_cerrar) },
+                on: {
+                  click: function($event) {
+                    return _vm.limpiarModal()
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _vm.accion === "agregar"
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "button" },
+                      domProps: { textContent: _vm._s(_vm.btn_guardar) },
+                      on: {
+                        click: function($event) {
+                          return _vm.agregarEmpleado()
+                        }
+                      }
+                    },
+                    [_vm._v("Save changes")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.accion === "editar"
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "button" },
+                      domProps: { textContent: _vm._s(_vm.btn_guardar) },
+                      on: {
+                        click: function($event) {
+                          return _vm.actualizarEmpleado()
+                        }
+                      }
+                    },
+                    [_vm._v("Save changes")]
+                  )
+                : _vm._e()
             ])
           ])
         ])
@@ -37975,17 +38625,26 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "btn btn-outline-warning btn-sm" }, [
-      _c("i", { staticClass: "fa fa-pencil-alt" })
+    return _c("button", { staticClass: "btn btn-outline-danger btn-sm" }, [
+      _c("i", { staticClass: "fa fa-trash" })
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "btn btn-outline-danger btn-sm" }, [
-      _c("i", { staticClass: "fa fa-trash" })
-    ])
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   }
 ]
 render._withStripped = true

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Empleado;
+use App\Http\Requests\EmpleadoRequest;
 use Illuminate\Http\Request;
 
 class EmpleadosController extends Controller
@@ -49,9 +50,11 @@ class EmpleadosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EmpleadoRequest $request)
     {
-        //
+        if (!$request->ajax()) return redirect('/');
+        Empleado::create($request->all());
+        dd($request);
     }
 
     /**
@@ -61,9 +64,11 @@ class EmpleadosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EmpleadoRequest $request, $id)
     {
-        //
+        if (!$request->ajax()) return redirect('/');
+        $empleado = Empleado::findOrFail($request->id);
+        $empleado->fill($request->all())->save();
     }
 
     /**

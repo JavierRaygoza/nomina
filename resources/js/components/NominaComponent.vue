@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="row vh-100 justify-content-center align-items-center">
+        <div class="row mt-5">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
@@ -9,7 +9,7 @@
                                 <h1 v-text="titulo" class="font-weight-bold"></h1>
                             </div>
                             <div class="col-md-12 col-lg-3 text-lg-right" >
-                                <button class="btn btn-outline-success btn-block"><span v-text="titulo"></span><i class="fa fa-plus-circle"></i></button>
+                                <button class="btn btn-outline-success btn-block" @click="accionEmpleado('agregar')" data-toggle="modal" data-target="#empleadoModal"><span v-text="agregar"></span><i class="fa fa-plus-circle"></i></button>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -24,7 +24,7 @@
                                     </tr>
                                 </thead>
                                 <tbody v-if="empleados.length === 0">
-                                    <td colspan="4">
+                                    <td colspan="5">
                                         <h4 class="text-danger text-center" v-text="lbl_sin_registros"></h4>
                                     </td>
                                 </tbody>
@@ -45,7 +45,7 @@
                                             <button class="btn btn-outline-primary btn-sm">
                                                 <i class="fa fa-eye"></i>
                                             </button>
-                                            <button class="btn btn-outline-warning btn-sm">
+                                            <button @click="accionEmpleado('editar', empleado)" data-toggle="modal" data-target="#empleadoModal" class="btn btn-outline-warning btn-sm">
                                                 <i class="fa fa-pencil-alt"></i>
                                             </button>
                                             <button class="btn btn-outline-danger btn-sm">
@@ -76,6 +76,96 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="empleadoModal" tabindex="-1" aria-labelledby="empleadoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="empleadoModalLabel" v-text="modal_titulo"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="codigo" v-text="lbl_codigo" id="codigo"></label>
+                                <input type="text" name="codigo" v-model="codigo" class="form-control">
+                                <div class="row">
+                                    <ul v-if="errors.codigo !== []">
+                                        <li v-for="error in errors.codigo" :key="error.codigo" v-text="error" class="text-danger"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="nombre" v-text="lbl_nombre" id="nombre"></label>
+                                <input type="text" name="nombre" v-model="nombre" class="form-control">
+                                <div class="row">
+                                    <ul v-if="errors.nombre !== []">
+                                        <li v-for="error in errors.nombre" :key="error.nombre" v-text="error" class="text-danger"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="apellido_paterno" v-text="lbl_apellido_paterno" id="apellido_paterno"></label>
+                                <input type="text" name="apellido_paterno" v-model="apellido_paterno" class="form-control">
+                                <div class="row">
+                                    <ul v-if="errors.apellido_paterno !== []">
+                                        <li v-for="error in errors.apellido_paterno" :key="error.apellido_paterno" v-text="error" class="text-danger"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="apellido_materno" v-text="lbl_apellido_materno" id="apellido_materno"></label>
+                                <input type="text" name="apellido_materno" v-model="apellido_materno" class="form-control">
+                                <div class="row">
+                                    <ul v-if="errors.apellido_materno !== []">
+                                        <li v-for="error in errors.apellido_materno" :key="error.apellido_materno" v-text="error" class="text-danger"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="correo_electronico" v-text="lbl_correo_electronico" id="correo_electronico"></label>
+                                <input type="email" name="correo_electronico" v-model="correo_electronico" class="form-control">
+                                <div class="row">
+                                    <ul v-if="errors.correo_electronico !== []">
+                                        <li v-for="error in errors.correo_electronico" :key="error.correo_electronico" v-text="error" class="text-danger"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-6">
+                            <div class="form-group">
+                                <label for="tipo_contrato" v-text="lbl_tipo_contrato"></label>
+                                <select name="tipo_contrato" id="tipo_contrato" v-model="tipo_contrato" class="form-control custom-select">
+                                    <option value="Prueba" selected>Prueba</option>
+                                    <option value="Temporal" selected>Temporal</option>
+                                    <option value="Indefinido" selected>Indefinido</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button @click="limpiarModal()" type="button" class="btn btn-danger" data-dismiss="modal" v-text="btn_cerrar"></button>
+                    <button v-if="accion === 'agregar'" @click="agregarEmpleado()" type="button" class="btn btn-primary" v-text="btn_guardar">Save changes</button>
+                    <button v-if="accion === 'editar'" @click="actualizarEmpleado()" type="button" class="btn btn-primary" v-text="btn_guardar">Save changes</button>
+                </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -83,15 +173,36 @@
     export default {
         data(){
             return{
-                titulo               : 'Lista de empleados',
-                agregar              : 'Agregar empleado',
-                lbl_codigo           : 'Código',
-                lbl_nombre           : 'Nombre',
-                lbl_apellido_paterno : 'Apellido paterno',
-                lbl_estado           : 'Estado',
-                lbl_acciones         : 'Acciones',
-                lbl_sin_registros    : 'No hay registros disponibles',
-                empleados            : [],
+                titulo                : 'Lista de empleados',
+                agregar                : 'Agregar empleado',
+                lbl_codigo             : 'Código',
+                lbl_nombre             : 'Nombre',
+                lbl_apellido_paterno   : 'Apellido paterno',
+                lbl_apellido_materno   : 'Apellido materno',
+                lbl_correo_electronico : 'Correo electrónico',
+                lbl_tipo_contrato      : 'Tipo de contraro',
+                lbl_estado             : 'Estado',
+                lbl_acciones           : 'Acciones',
+                lbl_sin_registros      : 'No hay registros disponibles',
+                empleados              : [],
+                errors                 : {
+                    'nombre'             : [],
+                    'codigo'             : [],
+                    'apellido_paterno'   : [],
+                    'apellido_materno'   : [],
+                    'correo_electronico' : [],
+                },
+                id                     : null,
+                codigo                 : null,
+                nombre                 : null,
+                apellido_paterno       : null,
+                apellido_materno       : null,
+                correo_electronico     : null,
+                accion                 : 'agregar',
+                tipo_contrato          : 'Prueba',
+                btn_cerrar             : 'Cerrar',
+                btn_guardar            : 'Guardar',
+                modal_titulo           : 'Agregar empleado',
                 pagination : {
                     'total'        : 0,
                     'current_page' : 0,
@@ -100,7 +211,6 @@
                     'from'         : 0,
                     'to'           : 0,
                 },
-                offset: 3,
                 search : ''
             }
         },
@@ -137,6 +247,112 @@
                 }).catch((error) => {
                     console.log(error);
                 });
+            },
+            agregarEmpleado(){
+                axios.post('/empleados',{
+                'codigo'            : this.codigo,
+                'nombre'            : this.nombre,
+                'apellido_paterno'  : this.apellido_paterno,
+                'apellido_materno'  : this.apellido_materno,
+                'correo_electronico': this.correo_electronico,
+                'tipo_contrato'     : this.tipo_contrato,
+                }).then((response) => {
+                    console.log(response);
+                    let { status } = response;
+                    if( status === 200 ){
+                        this.limpiarModal();
+                        this.getEmpleados();
+                        Swal.fire({
+                            type  : 'success',
+                            title : 'Empleado agregado exitosamente.',
+                            text  : 'El empleado se ha registrado.',
+                        });
+                    } else {
+                        this.limpiarModal();
+                        this.getEmpleados();
+                        Swal.fire({
+                            type  : 'error',
+                            title : 'Error al registrar al empleado.',
+                            text  : 'El empleado no ha sido registrado.',
+                        });
+                    }
+                }).catch((error) => {
+                    this.errors = errors = {
+                        'nombre'             : [],
+                        'codigo'             : [],
+                        'apellido_paterno'   : [],
+                        'apellido_materno'   : [],
+                        'correo_electronico' : [],
+                    };
+                    let { response, response: { data, data: { errors } } } = error;
+                    this.errors = errors;
+                    console.log(error);
+                });
+            },
+            actualizarEmpleado(){
+                axios.put('/empleados/'+ this.id,{
+                'id'                 : this.id,
+                'codigo'             : this.codigo,
+                'nombre'             : this.nombre,
+                'apellido_paterno'   : this.apellido_paterno,
+                'apellido_materno'   : this.apellido_materno,
+                'correo_electronico' : this.correo_electronico,
+                'tipo_contrato'      : this.tipo_contrato
+                }).then((response) => {
+                    let { status } = response;
+                    if( status === 200 ){
+                        this.limpiarModal();
+                        this.getEmpleados();
+                        Swal.fire({
+                            type  : 'success',
+                            title : 'Empleado actualizado exitosamente.',
+                            text  : 'El empleado se ha actualizado.',
+                        });
+                    } else {
+                        this.limpiarModal();
+                        this.getEmpleados();
+                        Swal.fire({
+                            type  : 'error',
+                            title : 'Error al actualizar al empleado.',
+                            text  : 'El empleado no ha sido actualizado.',
+                        });
+                    }
+                }).catch((error) => {
+                    let { response, response: { data, data: { errors } } } = error;
+                    this.errors = errors;
+                    console.log(error);
+                });
+            },
+            accionEmpleado(accion, modelo = []){
+                this.accion = accion;
+
+                if( accion === 'editar' ){
+                    this.modal_titulo       = 'Actualizar empleado',
+                    this.id                 = modelo.id;
+                    this.codigo             = modelo.codigo;
+                    this.nombre             = modelo.nombre;
+                    this.apellido_paterno   = modelo.apellido_paterno;
+                    this.apellido_materno   = modelo.apellido_materno;
+                    this.correo_electronico = modelo.correo_electronico;
+                    this.tipo_contrato      = modelo.tipo_contrato;
+                } 
+            },
+            limpiarModal(){
+                this.modal_titulo       = 'Agregar empleado',
+                this.codigo             = null;
+                this.nombre             = null;
+                this.apellido_paterno   = null;
+                this.apellido_materno   = null;
+                this.correo_electronico = null;
+                this.tipo_contrato      = 'Prueba';
+                this.errors             = {
+                    'nombre'             : [],
+                    'codigo'             : [],
+                    'apellido_paterno'   : [],
+                    'apellido_materno'   : [],
+                    'correo_electronico' : [],
+                };
+                $('#empleadoModal').modal('hide');
             },
         },
         mounted() {

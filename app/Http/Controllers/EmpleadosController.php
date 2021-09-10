@@ -9,12 +9,13 @@ use Illuminate\Http\Request;
 class EmpleadosController extends Controller
 {
 
+        
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */ 
-
+     * index
+     * Consulta la información en la base de datos y la retorna hacia la vista
+     * @param  mixed $request
+     * @return void
+     */
     public function index(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
@@ -44,25 +45,25 @@ class EmpleadosController extends Controller
         ];
     }
 
+        
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * store
+     * Recibe la información de la petición y crea un nuevo registro en la base de datos
+     * @param  mixed $request
+     * @return void
      */
     public function store(EmpleadoRequest $request)
     {
         if (!$request->ajax()) return redirect('/');
         Empleado::create($request->all());
-        dd($request);
     }
 
+        
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * update
+     * Recibe la información de la petición y actualiza el registro correspondiente en la base de datos
+     * @param  mixed $request
+     * @return void
      */
     public function update(EmpleadoRequest $request)
     {
@@ -70,13 +71,12 @@ class EmpleadosController extends Controller
         $empleado = Empleado::findOrFail($request->id);
         $empleado->fill($request->all())->save();
     }
-
+         
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * estados
+     * Se encarga de cambiar los campos <<estado>> y <<estatus>> de los registros en la base de datos
+     * @param  mixed $request
+     * @return void
      */
     public function estados(Request $request)
     {

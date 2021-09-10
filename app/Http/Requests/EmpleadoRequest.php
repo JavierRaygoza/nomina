@@ -15,11 +15,11 @@ class EmpleadoRequest extends FormRequest
     {
         return true;
     }
-
+   
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
+     * rules
+     * Se enlistas las validaciones que se realizaran para cada campo
+     * @return void
      */
     public function rules()
     {
@@ -33,18 +33,24 @@ class EmpleadoRequest extends FormRequest
     
         return $rules;
     }
-
+    
+    /**
+     * messages
+     * Ayuda con la personalización de los mensajes que se muestran en el FrontEnd
+     * Se utiliza el helper <<trans>> para traer las etiquetas como variables y solo modificar el archivo principal de ser requerido
+     * @return void
+     */
     public function messages()
-{
-    return [
-        'codigo.required'             => 'El código es requerido.',
-        'nombre.required'             => 'El nombre es requerido.',
-        'nombre.regex'                => 'Este campo solo acepta letras y guiones.',
-        'apellido_paterno.required'   => 'El apellido paterno es requerido.',
-        'apellido_materno.required'   => 'El apellido materno es requerido.',
-        'correo_electronico.required' => 'El correo electrónico es requerido.',
-        'correo_electronico.email'    => 'El correo electrónico es invalido.',
-    ];
-}
+    {
+        return [
+            'codigo.required'             => trans('app.codigo_required'),
+            'nombre.required'             => trans('app.nombre_required'),
+            'nombre.regex'                => trans('app.nombre_regex'),
+            'apellido_paterno.required'   => trans('app.apellido_paterno_required'),
+            'apellido_materno.required'   => trans('app.apellido_materno_required'),
+            'correo_electronico.required' => trans('app.correo_electronico_required'),
+            'correo_electronico.email'    => trans('app.correo_electronico_format'),
+        ];
+    }
 
 }

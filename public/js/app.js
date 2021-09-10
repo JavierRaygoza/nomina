@@ -2115,7 +2115,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  /*Almacena las variables del componente para poder utilizarlas en el HTML del mismo.
+  | Algunas se muestran vacías puesto que se alimentan con datos que provienen del servidor.
+  */
   data: function data() {
     return {
       titulo: 'Lista de empleados',
@@ -2173,10 +2192,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     };
   },
+  // Permite modificar, manipular y mostrar datos dentro de los componentes
   computed: {
+    // Retorna el numero de pagina que esta activa
     isActived: function isActived() {
       return this.pagination.current_page;
     },
+    // retorna el número de paginas que conforman los registros recibidos
     pagesNumber: function pagesNumber() {
       if (!this.pagination.to) {
         return [];
@@ -2205,10 +2227,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   methods: {
+    /* Permite desplazarse dentro de la paginación de datos.
+    | * Recibe el numero de pagina como parametro y actualiza la pagina actual.
+    | * Llama a la función getEmpleados() y manda la pagina por parámetro.
+    */
     cambiarPagina: function cambiarPagina(page) {
       this.pagination.current_page = page;
       this.getEmpleados(page);
     },
+
+    /* Hace la petición y procesa los datos desde el servidor.
+    | * Tiene dos parametros opcionales para la paginación y la busqueda.
+    | * Llama a la ruta empleados con el metodo GET y se le concatenan los parametros recibidos en la función.
+    | * Por defecto en la paginanación comienza en la pagina 1 y la busqueda en blanco.
+    */
     getEmpleados: function getEmpleados() {
       var _this = this;
 
@@ -2225,6 +2257,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error);
       });
     },
+
+    /* Permite agregar un usuario a partir de la captura de datos mediante el formulario.
+    | * Crea un objeto con los datos recabados en el formulario.
+    | * Dicho objeto lo envia en una petición a la ruta empleados con el metodo POST.
+    | * Si la petición se ejecuta correctamente lanza una alerta de éxito de lo contrario una de error.
+    | * Los errores de validación los almacena en un objeto de arrays para posteriormente mostrarlos en la vista.
+    */
     agregarEmpleado: function agregarEmpleado() {
       var _this2 = this;
 
@@ -2236,7 +2275,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         'correo_electronico': this.correo_electronico,
         'tipo_contrato': this.tipo_contrato
       }).then(function (response) {
-        console.log(response);
         var status = response.status;
 
         if (status === 200) {
@@ -2276,6 +2314,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error);
       });
     },
+
+    /* Permite actualizar un usuario a partir de la captura de datos mediante el formulario.
+    | * Crea un objeto con los datos recabados en el formulario.
+    | * Dicho objeto lo envia en una petición a la ruta empleados con el metodo PUT.
+    | * Si la petición se ejecuta correctamente lanza una alerta de éxito de lo contrario una de error.
+    | * Los errores de validación los almacena en un objeto de arrays para posteriormente mostrarlos en la vista.
+    */
     actualizarEmpleado: function actualizarEmpleado() {
       var _this3 = this;
 
@@ -2320,6 +2365,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error);
       });
     },
+
+    /* Ayuda a completar los datos del formulario a partir de la acción que le enviemos.
+    | * Recibe como parámetros la acción a realizar que puede ser: <<agregar>> o <<agregar>>.
+    | * El parámetro acción ayudara a cargar o no datos al formulario asi como cambiar el titulo del modal.
+    | * También recibe el modelo que se va a editar, este viene vacío por defecto, pero en el caso de editar.
+    | * es necesario mandarlo para cargar los datos a los respectivos campos.
+    */
     accionEmpleado: function accionEmpleado(accion) {
       var modelo = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
       this.accion = accion;
@@ -2335,6 +2387,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.estado = modelo.estado;
       }
     },
+
+    /* Resetea completamente la ventana modal y todos los campos del modelo para poder volver a ser utilizada.
+    | * Regresa a un estado nulo las variables del modelo y los titulos a su estado inicial, de igual forma los errores.
+    | * Ejecuta una función para desaparecer el modal.
+    */
     limpiarModal: function limpiarModal() {
       this.modal_titulo = 'Agregar empleado', this.codigo = null;
       this.nombre = null;
@@ -2351,6 +2408,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       };
       $('#empleadoModal').modal('hide');
     },
+
+    /* Ayuda con las peticiones para cambiar los estados de <<estado>> y <<estatus>>.
+    | * Esta función es utilizada más de una vez es por eso que tiene varios parametros.
+    | * Se utiliza en <<activar>> e <<inactivar>> al usuario y también en la eliminación lógica.
+    | * El parametro campo índica el campo que se editará.
+    | * El valor campo índica el valor que se asignará.
+    | * El parametro modelo recibe el registro que se editará.
+    | * Los titulos estan declarados en la parte inicial.
+    */
     cambiarEstados: function cambiarEstados(campo, valor, modelo, titulo_exito, descripcion_exito, titulo_error, descripcion_error) {
       var _this4 = this;
 
@@ -2378,6 +2444,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error);
       });
     },
+
+    /* Activa o desactiva a un empleado dependiendo de los parametros que se le manden.
+    | * Evalua la acción.
+    | * Dependiendo de la acción cambian los parametros de la función cambiarEstados().
+    */
     activarDesactivar: function activarDesactivar(empleado) {
       switch (empleado.estado) {
         case 'Activo':
@@ -2389,6 +2460,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           break;
       }
     },
+
+    /* Elimina de manera lógica a el empleado que se le pasa por parámetro.
+    | * Emite un mensaje de confirmación.
+    | * Si no se confirma se cancela la acción de eliminado.
+    | * Si se confirma se ejecuta la función cambiarEstados() con los respectivos parámetros.
+    */
     eliminarEmpleado: function eliminarEmpleado(empleado) {
       var _this5 = this;
 
@@ -2408,6 +2485,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   mounted: function mounted() {
+    // Ejecuta la función al ejecutar el componente.
     this.getEmpleados();
   }
 });

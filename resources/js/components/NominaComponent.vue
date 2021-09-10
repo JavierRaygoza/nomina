@@ -5,15 +5,20 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
+                            <!-- Inicio: Encabezado -->
                             <div class="col-md-12 col-lg-9">
                                 <h1 v-text="titulo" class="font-weight-bold"></h1>
                             </div>
+                            <!-- Fin: Encabezado -->
+                            <!-- Inicio: Botón agregar empleado -->
                             <div class="col-md-12 col-lg-3 text-lg-right" >
                                 <button class="btn btn-outline-success btn-block" @click="accionEmpleado('agregar')" data-toggle="modal" data-target="#empleadoModal"><span v-text="agregar"></span><i class="fa fa-plus-circle"></i></button>
                             </div>
+                            <!-- Fin: Botón agregar empleado -->
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover">
+                                <!-- Inicio: thead con titulos -->
                                 <thead>
                                     <tr>
                                         <th v-text="lbl_codigo"></th>
@@ -23,11 +28,15 @@
                                         <th v-text="lbl_acciones"></th>
                                     </tr>
                                 </thead>
+                                <!-- Fin: thead con titulos -->
+                                <!-- Inicio: tbody sin datos -->
                                 <tbody v-if="empleados.length === 0">
                                     <td colspan="5">
                                         <h4 class="text-danger text-center" v-text="lbl_sin_registros"></h4>
                                     </td>
                                 </tbody>
+                                <!-- Fin: tbody sin datos -->
+                                <!-- Inicio: tbody con datos -->
                                 <tbody v-else>
                                     <tr v-for="empleado in empleados" :key="empleado.id">
                                         <td v-text="empleado.codigo"></td>
@@ -54,8 +63,10 @@
                                         </td>
                                     </tr>
                                 </tbody>
+                                <!-- Fin: tbody con datos -->
                             </table>
                       </div>
+                      <!-- Inicio: Paginación -->
                       <div class="row">
                           <div class="col-md-12">
                                 <nav aria-label="...">
@@ -72,10 +83,12 @@
                                 </nav>
                           </div>
                       </div>
+                      <!-- Fin: Paginación -->
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Inicio: Modal para mostrar la creación de empleado -->
         <div class="modal fade" id="empleadoModal" tabindex="-1" aria-labelledby="empleadoModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -166,6 +179,8 @@
                 </div>
             </div>
         </div>
+        <!-- Fin: Modal para mostrar la creación de empleado -->
+        <!-- Inicio: Modal para mostrar informacion de empleado -->
         <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -200,11 +215,15 @@
                 </div>
             </div>
         </div>
+        <!-- Fin: Modal para mostrar informacion de empleado -->
     </div>
 </template>
 
 <script>
     export default {
+        /*Almacena las variables del componente para poder utilizarlas en el HTML del mismo.
+        | Algunas se muestran vacías puesto que se alimentan con datos que provienen del servidor.
+        */
         data(){
             return{
                 titulo                       : 'Lista de empleados',
@@ -262,10 +281,13 @@
                 },
             }
         },
+        // Permite modificar, manipular y mostrar datos dentro de los componentes
         computed : {
+            // Retorna el numero de pagina que esta activa
             isActived : function(){
                 return this.pagination.current_page;
             },
+            // retorna el número de paginas que conforman los registros recibidos
             pagesNumber : function(){
                 if (!this.pagination.to) {return[];}
                 let from = this.pagination.current_page -this.offset;
@@ -281,10 +303,19 @@
             }
         },
         methods: {
+            /* Permite desplazarse dentro de la paginación de datos.
+            | * Recibe el numero de pagina como parametro y actualiza la pagina actual.
+            | * Llama a la función getEmpleados() y manda la pagina por parámetro.
+            */
             cambiarPagina(page){
                 this.pagination.current_page = page;
                 this.getEmpleados(page);
             },
+            /* Hace la petición y procesa los datos desde el servidor.
+            | * Tiene dos parametros opcionales para la paginación y la busqueda.
+            | * Llama a la ruta empleados con el metodo GET y se le concatenan los parametros recibidos en la función.
+            | * Por defecto en la paginanación comienza en la pagina 1 y la busqueda en blanco.
+            */
             getEmpleados(page = 1, search = ''){
                 let url = '/empleados?search='+search+'&page='+page;
                 axios.get(url).then((response) => {
@@ -296,6 +327,12 @@
                     console.log(error);
                 });
             },
+            /* Permite agregar un usuario a partir de la captura de datos mediante el formulario.
+            | * Crea un objeto con los datos recabados en el formulario.
+            | * Dicho objeto lo envia en una petición a la ruta empleados con el metodo POST.
+            | * Si la petición se ejecuta correctamente lanza una alerta de éxito de lo contrario una de error.
+            | * Los errores de validación los almacena en un objeto de arrays para posteriormente mostrarlos en la vista.
+            */
             agregarEmpleado(){
                 axios.post('/empleados',{
                 'codigo'            : this.codigo,
@@ -305,7 +342,6 @@
                 'correo_electronico': this.correo_electronico,
                 'tipo_contrato'     : this.tipo_contrato,
                 }).then((response) => {
-                    console.log(response);
                     let { status } = response;
                     if( status === 200 ){
                         this.limpiarModal();
@@ -337,6 +373,12 @@
                     console.log(error);
                 });
             },
+            /* Permite actualizar un usuario a partir de la captura de datos mediante el formulario.
+            | * Crea un objeto con los datos recabados en el formulario.
+            | * Dicho objeto lo envia en una petición a la ruta empleados con el metodo PUT.
+            | * Si la petición se ejecuta correctamente lanza una alerta de éxito de lo contrario una de error.
+            | * Los errores de validación los almacena en un objeto de arrays para posteriormente mostrarlos en la vista.
+            */
             actualizarEmpleado(){
                 axios.put('/empleados/'+ this.id,{
                 'id'                 : this.id,
@@ -371,6 +413,12 @@
                     console.log(error);
                 });
             },
+            /* Ayuda a completar los datos del formulario a partir de la acción que le enviemos.
+            | * Recibe como parámetros la acción a realizar que puede ser: <<agregar>> o <<agregar>>.
+            | * El parámetro acción ayudara a cargar o no datos al formulario asi como cambiar el titulo del modal.
+            | * También recibe el modelo que se va a editar, este viene vacío por defecto, pero en el caso de editar.
+            | * es necesario mandarlo para cargar los datos a los respectivos campos.
+            */
             accionEmpleado(accion, modelo = []){
 
                 this.accion = accion;
@@ -387,6 +435,10 @@
                     this.estado             = modelo.estado;
                 } 
             },
+            /* Resetea completamente la ventana modal y todos los campos del modelo para poder volver a ser utilizada.
+            | * Regresa a un estado nulo las variables del modelo y los titulos a su estado inicial, de igual forma los errores.
+            | * Ejecuta una función para desaparecer el modal.
+            */
             limpiarModal(){
                 this.modal_titulo       = 'Agregar empleado',
                 this.codigo             = null;
@@ -404,6 +456,14 @@
                 };
                 $('#empleadoModal').modal('hide');
             },
+            /* Ayuda con las peticiones para cambiar los estados de <<estado>> y <<estatus>>.
+            | * Esta función es utilizada más de una vez es por eso que tiene varios parametros.
+            | * Se utiliza en <<activar>> e <<inactivar>> al usuario y también en la eliminación lógica.
+            | * El parametro campo índica el campo que se editará.
+            | * El valor campo índica el valor que se asignará.
+            | * El parametro modelo recibe el registro que se editará.
+            | * Los titulos estan declarados en la parte inicial.
+            */
             cambiarEstados(campo, valor, modelo, titulo_exito, descripcion_exito, titulo_error, descripcion_error){
                 axios.put('/empleados/estado/'+ modelo.id,{
                     [`${campo}`] : valor
@@ -428,6 +488,10 @@
                     console.log(error);
                 });
             },
+            /* Activa o desactiva a un empleado dependiendo de los parametros que se le manden.
+            | * Evalua la acción.
+            | * Dependiendo de la acción cambian los parametros de la función cambiarEstados().
+            */
             activarDesactivar(empleado){
                 switch (empleado.estado) {
                     case 'Activo':
@@ -439,6 +503,11 @@
                         break;
                 }
             },
+            /* Elimina de manera lógica a el empleado que se le pasa por parámetro.
+            | * Emite un mensaje de confirmación.
+            | * Si no se confirma se cancela la acción de eliminado.
+            | * Si se confirma se ejecuta la función cambiarEstados() con los respectivos parámetros.
+            */
             eliminarEmpleado(empleado){
                 Swal.fire({
                   title: '¿Esta seguro de eliminar al empleado?',
@@ -456,6 +525,7 @@
             }
         },
         mounted() {
+            // Ejecuta la función al ejecutar el componente.
             this.getEmpleados();
         }
     }

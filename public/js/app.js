@@ -2081,6 +2081,40 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2109,6 +2143,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       apellido_paterno: null,
       apellido_materno: null,
       correo_electronico: null,
+      estado: null,
       accion: 'agregar',
       tipo_contrato: 'Prueba',
       btn_cerrar: 'Cerrar',
@@ -2297,6 +2332,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.apellido_materno = modelo.apellido_materno;
         this.correo_electronico = modelo.correo_electronico;
         this.tipo_contrato = modelo.tipo_contrato;
+        this.estado = modelo.estado;
       }
     },
     limpiarModal: function limpiarModal() {
@@ -38183,7 +38219,25 @@ var render = function() {
                                 )
                               : _vm._e(),
                             _vm._v(" "),
-                            _vm._m(0, true),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-outline-primary btn-sm",
+                                attrs: {
+                                  "data-toggle": "modal",
+                                  "data-target": "#infoModal"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.accionEmpleado(
+                                      "editar",
+                                      empleado
+                                    )
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fa fa-eye" })]
+                            ),
                             _vm._v(" "),
                             _c(
                               "button",
@@ -38329,7 +38383,7 @@ var render = function() {
                 domProps: { textContent: _vm._s(_vm.modal_titulo) }
               }),
               _vm._v(" "),
-              _vm._m(1)
+              _vm._m(0)
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
@@ -38668,38 +38722,159 @@ var render = function() {
               }),
               _vm._v(" "),
               _vm.accion === "agregar"
-                ? _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "button" },
-                      domProps: { textContent: _vm._s(_vm.btn_guardar) },
-                      on: {
-                        click: function($event) {
-                          return _vm.agregarEmpleado()
-                        }
+                ? _c("button", {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    domProps: { textContent: _vm._s(_vm.btn_guardar) },
+                    on: {
+                      click: function($event) {
+                        return _vm.agregarEmpleado()
                       }
-                    },
-                    [_vm._v("Save changes")]
-                  )
+                    }
+                  })
                 : _vm._e(),
               _vm._v(" "),
               _vm.accion === "editar"
-                ? _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "button" },
-                      domProps: { textContent: _vm._s(_vm.btn_guardar) },
-                      on: {
-                        click: function($event) {
-                          return _vm.actualizarEmpleado()
-                        }
+                ? _c("button", {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    domProps: { textContent: _vm._s(_vm.btn_guardar) },
+                    on: {
+                      click: function($event) {
+                        return _vm.actualizarEmpleado()
                       }
-                    },
-                    [_vm._v("Save changes")]
-                  )
+                    }
+                  })
                 : _vm._e()
+            ])
+          ])
+        ])
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "infoModal",
+          tabindex: "-1",
+          "aria-labelledby": "infoModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c("h5", {
+                staticClass: "modal-title font-weight-bold",
+                attrs: { id: "infoModalLabel" },
+                domProps: {
+                  textContent: _vm._s(_vm.nombre + " " + _vm.apellido_paterno)
+                }
+              }),
+              _vm._v(" "),
+              _vm._m(1)
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-body" }, [
+              _c("table", { staticClass: "table" }, [
+                _c("tbody", [
+                  _c("tr", [
+                    _c("p", {
+                      staticClass: "font-weight-bold text-muted",
+                      domProps: { textContent: _vm._s(_vm.lbl_nombre) }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("p", {
+                      staticClass: "font-weight-bold text-dark",
+                      domProps: {
+                        textContent: _vm._s(
+                          _vm.nombre +
+                            " " +
+                            _vm.apellido_paterno +
+                            " " +
+                            _vm.apellido_materno
+                        )
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("p", {
+                      staticClass: "font-weight-bold text-muted",
+                      domProps: {
+                        textContent: _vm._s(_vm.lbl_correo_electronico)
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("p", { staticClass: "font-weight-bold text-dark" }, [
+                      _c(
+                        "a",
+                        { attrs: { href: "mailto:" + _vm.correo_electronico } },
+                        [_vm._v(" " + _vm._s(_vm.correo_electronico) + " ")]
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("p", {
+                      staticClass: "font-weight-bold text-muted",
+                      domProps: { textContent: _vm._s(_vm.lbl_tipo_contrato) }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("p", {
+                      staticClass: "font-weight-bold text-dark",
+                      domProps: { textContent: _vm._s(_vm.tipo_contrato) }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("p", {
+                      staticClass: "font-weight-bold text-muted",
+                      domProps: { textContent: _vm._s(_vm.lbl_estado) }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _vm.estado == "Activo"
+                      ? _c("p", {
+                          staticClass: "font-weight-bold text-success",
+                          domProps: { textContent: _vm._s(_vm.estado) }
+                        })
+                      : _vm._e()
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _vm.estado == "Inactivo"
+                      ? _c("p", {
+                          staticClass: "font-weight-bold text-danger",
+                          domProps: { textContent: _vm._s(_vm.estado) }
+                        })
+                      : _vm._e()
+                  ])
+                ])
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-footer" }, [
+              _c("button", {
+                staticClass: "btn btn-danger",
+                attrs: { type: "button", "data-dismiss": "modal" },
+                domProps: { textContent: _vm._s(_vm.btn_cerrar) },
+                on: {
+                  click: function($event) {
+                    return _vm.limpiarModal()
+                  }
+                }
+              })
             ])
           ])
         ])
@@ -38712,9 +38887,18 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "btn btn-outline-primary btn-sm" }, [
-      _c("i", { staticClass: "fa fa-eye" })
-    ])
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
   },
   function() {
     var _vm = this

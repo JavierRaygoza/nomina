@@ -42,7 +42,7 @@
                                             <button @click="activarDesactivar(empleado)" v-if="empleado.estado === 'Activo'" class="btn btn-danger btn-sm">
                                                 <i class="fa fa-user-slash"></i>
                                             </button>
-                                            <button class="btn btn-outline-primary btn-sm">
+                                            <button @click="accionEmpleado('editar', empleado)" data-toggle="modal" data-target="#infoModal" class="btn btn-outline-primary btn-sm">
                                                 <i class="fa fa-eye"></i>
                                             </button>
                                             <button @click="accionEmpleado('editar', empleado)" data-toggle="modal" data-target="#empleadoModal" class="btn btn-outline-warning btn-sm">
@@ -160,8 +160,42 @@
                 </div>
                 <div class="modal-footer">
                     <button @click="limpiarModal()" type="button" class="btn btn-danger" data-dismiss="modal" v-text="btn_cerrar"></button>
-                    <button v-if="accion === 'agregar'" @click="agregarEmpleado()" type="button" class="btn btn-primary" v-text="btn_guardar">Save changes</button>
-                    <button v-if="accion === 'editar'" @click="actualizarEmpleado()" type="button" class="btn btn-primary" v-text="btn_guardar">Save changes</button>
+                    <button v-if="accion === 'agregar'" @click="agregarEmpleado()" type="button" class="btn btn-primary" v-text="btn_guardar"></button>
+                    <button v-if="accion === 'editar'" @click="actualizarEmpleado()" type="button" class="btn btn-primary" v-text="btn_guardar"></button>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title font-weight-bold" id="infoModalLabel" v-text="nombre + ' ' + apellido_paterno"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody>
+                            <tr><p class="font-weight-bold text-muted" v-text="lbl_nombre"></p></tr>
+                            <tr><p class="font-weight-bold text-dark" v-text="nombre + ' ' + apellido_paterno + ' ' + apellido_materno"></p></tr>
+                            <tr><p class="font-weight-bold text-muted" v-text="lbl_correo_electronico"></p></tr>
+                            <tr>
+                                <p class="font-weight-bold text-dark">
+                                    <a v-bind:href="'mailto:' + correo_electronico"> {{ correo_electronico }} </a>
+                                </p>
+                            </tr>
+                            <tr><p class="font-weight-bold text-muted" v-text="lbl_tipo_contrato"></p></tr>
+                            <tr><p class="font-weight-bold text-dark" v-text="tipo_contrato"></p></tr>
+                            <tr><p class="font-weight-bold text-muted" v-text="lbl_estado"></p></tr>
+                            <tr><p v-if="estado == 'Activo'" class="font-weight-bold text-success" v-text="estado"></p></tr>
+                            <tr><p v-if="estado == 'Inactivo'" class="font-weight-bold text-danger" v-text="estado"></p></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button @click="limpiarModal()" type="button" class="btn btn-danger" data-dismiss="modal" v-text="btn_cerrar"></button>
                 </div>
                 </div>
             </div>
@@ -198,6 +232,7 @@
                 apellido_paterno             : null,
                 apellido_materno             : null,
                 correo_electronico           : null,
+                estado                       : null,
                 accion                       : 'agregar',
                 tipo_contrato                : 'Prueba',
                 btn_cerrar                   : 'Cerrar',
@@ -337,6 +372,7 @@
                 });
             },
             accionEmpleado(accion, modelo = []){
+
                 this.accion = accion;
 
                 if( accion === 'editar' ){
@@ -348,6 +384,7 @@
                     this.apellido_materno   = modelo.apellido_materno;
                     this.correo_electronico = modelo.correo_electronico;
                     this.tipo_contrato      = modelo.tipo_contrato;
+                    this.estado             = modelo.estado;
                 } 
             },
             limpiarModal(){
